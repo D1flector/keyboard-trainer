@@ -47,5 +47,6 @@ inputArea.addEventListener('keydown', (event) => {
 startBtn.addEventListener('click', () => {
   inputArea.disabled = false;
   inputArea.focus();
+  inputArea.value = '';
   textDisplay.innerText = getRandomSentence();
 });

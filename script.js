@@ -3,6 +3,8 @@ const startBtn = document.querySelector('.start-btn');
 const inputArea = document.querySelector('#input-area');
 const textDisplay = document.querySelector('#text-to-type');
 
+let startTime;
+
 const sentences = [
   "decide south if down mind mark sea me fast half",
   "the quick brown fox jumps over the lazy dog",
@@ -33,6 +35,14 @@ function getRandomSentence() {
   return uniqueSentence;
 }
 
+startBtn.addEventListener('click', () => {
+  inputArea.disabled = false;
+  inputArea.focus();
+  inputArea.value = '';
+  textDisplay.innerText = getRandomSentence();
+  startTime = new Date();
+});
+
 inputArea.addEventListener('keydown', (event) => {
   const pressedKey = event.key.toUpperCase();
   keys.forEach(key => {
@@ -44,9 +54,11 @@ inputArea.addEventListener('keydown', (event) => {
   });
 });
 
-startBtn.addEventListener('click', () => {
-  inputArea.disabled = false;
-  inputArea.focus();
-  inputArea.value = '';
-  textDisplay.innerText = getRandomSentence();
+inputArea.addEventListener('input', () => {
+  if (textDisplay.innerText === inputArea.value) {
+    inputArea.disabled = true;
+    const endTime = new Date();
+    const finalTime = ((endTime - startTime) / 1000).toFixed(2);
+    inputArea.value = `Вы завершили ввод за ${finalTime} секунд`;
+  }
 });

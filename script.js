@@ -4,6 +4,7 @@ const inputArea = document.querySelector('#input-area');
 const textDisplay = document.querySelector('#text-to-type');
 
 let startTime;
+let currentText = "";
 
 const sentences = [
   "decide south if down mind mark sea me fast half",
@@ -39,8 +40,9 @@ startBtn.addEventListener('click', () => {
   inputArea.disabled = false;
   inputArea.focus();
   inputArea.value = '';
-  textDisplay.innerText = getRandomSentence();
+  currentText = getRandomSentence();
   startTime = new Date();
+  textDisplay.innerHTML = currentText.split('').map(char => `<span>${char}</span>`).join('');
 });
 
 inputArea.addEventListener('keydown', (event) => {
@@ -55,10 +57,27 @@ inputArea.addEventListener('keydown', (event) => {
 });
 
 inputArea.addEventListener('input', () => {
-  if (textDisplay.innerText === inputArea.value) {
+  const inputText = inputArea.value;
+  const textSpans = textDisplay.querySelectorAll('span');
+
+  textSpans.forEach((span, index) => {
+    if (index < inputText.length) {
+      if (inputText[index] === span.innerText) {
+        span.classList.add('correct');
+        span.classList.remove('incorrect');
+      } else {
+        span.classList.add('incorrect');
+        span.classList.remove('correct');
+      }
+    } else {
+      span.classList.remove('correct', 'incorrect');
+    }
+  });
+  
+  if (currentText === inputText) {
     inputArea.disabled = true;
     const endTime = new Date();
     const finalTime = ((endTime - startTime) / 1000).toFixed(2);
-    inputArea.value = `Вы завершили ввод за ${finalTime} секунд`;
+    inputArea.value = `Ваш результат: ${finalTime} секунд`;
   }
 });

@@ -2,6 +2,7 @@ const keys = document.querySelectorAll('.key');
 const startBtn = document.querySelector('.start-btn');
 const inputArea = document.querySelector('#input-area');
 const textDisplay = document.querySelector('#text-to-type');
+const progressLine = document.querySelector('.progress-line');
 
 let startTime;
 let currentText = "";
@@ -43,6 +44,7 @@ startBtn.addEventListener('click', () => {
   currentText = getRandomSentence();
   startTime = new Date();
   textDisplay.innerHTML = currentText.split('').map(char => `<span>${char}</span>`).join('');
+  progressLine.style.width = '0%';
 });
 
 inputArea.addEventListener('keydown', (event) => {
@@ -59,12 +61,14 @@ inputArea.addEventListener('keydown', (event) => {
 inputArea.addEventListener('input', () => {
   const inputText = inputArea.value;
   const textSpans = textDisplay.querySelectorAll('span');
+  let correctCount = 0;
 
   textSpans.forEach((span, index) => {
     if (index < inputText.length) {
       if (inputText[index] === span.innerText) {
         span.classList.add('correct');
         span.classList.remove('incorrect');
+        correctCount++;
       } else {
         span.classList.add('incorrect');
         span.classList.remove('correct');
@@ -73,11 +77,14 @@ inputArea.addEventListener('input', () => {
       span.classList.remove('correct', 'incorrect');
     }
   });
-  
+
   if (currentText === inputText) {
     inputArea.disabled = true;
     const endTime = new Date();
     const finalTime = ((endTime - startTime) / 1000).toFixed(2);
     inputArea.value = `Ваш результат: ${finalTime} секунд`;
   }
+
+  const progress = (correctCount / currentText.length) * 100;
+  progressLine.style.width = `${progress}%`;
 });
